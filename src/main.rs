@@ -1,6 +1,10 @@
+use std::net::TcpListener;
+
 use newsletter::startup_server;
 
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
-    startup_server()?.await
+    let listener = TcpListener::bind("127.0.0.1:7777").expect("failed to bind port");
+
+    startup_server(listener)?.await
 }
