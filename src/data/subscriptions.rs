@@ -1,9 +1,13 @@
 use chrono::Utc;
-use sqlx::PgPool;
+use sqlx::{postgres::PgQueryResult, PgPool};
 use uuid::Uuid;
 
-pub async fn create_subscriber(pool: &PgPool, email: String, name: String) {
-    let _ = sqlx::query!(
+pub async fn create_subscriber(
+    pool: &PgPool,
+    email: String,
+    name: String,
+) -> Result<PgQueryResult, sqlx::Error> {
+    sqlx::query!(
         r#"
         INSERT INTO subscriptions (id, email, name, subscribed_at) 
         VALUES ($1, $2, $3, $4)
@@ -14,5 +18,5 @@ pub async fn create_subscriber(pool: &PgPool, email: String, name: String) {
         Utc::now()
     )
     .execute(pool)
-    .await;
+    .await
 }

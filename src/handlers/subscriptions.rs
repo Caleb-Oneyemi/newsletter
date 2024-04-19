@@ -14,6 +14,10 @@ pub struct SubscriberFormData {
 }
 
 pub async fn subscribe(form: Form<SubscriberFormData>, conn: Data<PgPool>) -> HttpResponse {
-    create_subscriber(&conn.get_ref(), form.email.clone(), form.name.clone()).await;
-    HttpResponse::Ok().finish()
+    let res = create_subscriber(&conn.get_ref(), form.email.clone(), form.name.clone()).await;
+
+    match res {
+        Ok(_) => HttpResponse::Ok().finish(),
+        Err(_) => HttpResponse::Conflict().finish(),
+    }
 }
