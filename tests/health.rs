@@ -1,9 +1,10 @@
-use newsletter::startup::run;
+use newsletter::{config::get_config, startup::run};
+use sqlx::PgPool;
 use std::net::TcpListener;
 
 #[tokio::test]
 async fn health_check_works() {
-    let address = spawn_app();
+    let address = spawn_app().await;
     let client = reqwest::Client::new();
 
     let response = client
@@ -19,11 +20,17 @@ async fn health_check_works() {
     );
 }
 
-fn spawn_app() -> String {
+async fn spawn_app() -> String {
     let listener = TcpListener::bind("127.0.0.1:0").expect("Failed to bind random port");
     let port = listener.local_addr().unwrap().port();
 
-    let server = run(listener).expect("integration test failed to bind address");
+    let config = get_config().expect("failed to read config.yaml");
+    let db_url = config.db.get_connection_string();
+    let conn_pool = PgPool::connect(&db_url)
+        .await
+        .expect("failed to connect to test db");
+
+    let server = run(listener, conn_pool).expect("integration test failed to bind address");
 
     let _ = tokio::spawn(server);
 

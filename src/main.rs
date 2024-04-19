@@ -9,12 +9,14 @@ async fn main() -> std::io::Result<()> {
 
     let config = get_config().expect("failed to read config.yaml");
     let db_url = config.db.get_connection_string();
-    let _conn_pool = PgPool::connect(&db_url).await.unwrap();
+    let conn_pool = PgPool::connect(&db_url)
+        .await
+        .expect("failed to connect to db");
 
     println!("db connection successful ....");
 
     let addr = format!("127.0.0.1:{}", config.port);
     let listener = TcpListener::bind(addr).expect("failed to bind port");
 
-    run(listener)?.await
+    run(listener, conn_pool)?.await
 }
