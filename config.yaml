@@ -1,0 +1,7 @@
+port: 8000
+db:
+  name: "newsletter"
+  username: "postgres"
+  password: "password"
+  port: 5432
+  host: "127.0.0.1"
