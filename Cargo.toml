@@ -30,3 +30,5 @@ reqwest = { version = "0.12", default-features = false, features = [
 ] }
 serde = "1.0.197"
 config = "0.14.0"
+uuid = { version = "1.8.0", features = ["v4", "serde", "fast-rng"] }
+chrono = { version = "0.4.37", default-features = false, features = ["clock"] }

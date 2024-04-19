@@ -1,3 +1,4 @@
 pub mod config;
-pub mod routes;
+pub mod data;
+pub mod handlers;
 pub mod startup;

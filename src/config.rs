@@ -23,6 +23,13 @@ impl DatabaseSettings {
             self.username, self.password, self.host, self.port, self.name
         )
     }
+
+    pub fn get_test_connection_string(&self) -> String {
+        format!(
+            "postgres://{}:{}@{}:{}",
+            self.username, self.password, self.host, self.port
+        )
+    }
 }
 
 pub fn get_config() -> Result<AppSettings, ConfigError> {
