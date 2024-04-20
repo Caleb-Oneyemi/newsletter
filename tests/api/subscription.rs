@@ -14,7 +14,7 @@ async fn subscription_works() {
         .await
         .expect("Failed to execute request.");
 
-    assert_eq!(200, response.status().as_u16());
+    assert_eq!(201, response.status().as_u16());
 
     let saved = sqlx::query!("SELECT email, name FROM subscriptions",)
         .fetch_one(&app.db_pool)
@@ -64,6 +64,6 @@ async fn subscription_fails_for_duplicate_data() {
         .await
         .expect("Failed to execute request.");
 
-    assert_eq!(200, response.status().as_u16());
+    assert_eq!(201, response.status().as_u16());
     assert_eq!(409, response2.status().as_u16());
 }
