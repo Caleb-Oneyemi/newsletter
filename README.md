@@ -25,16 +25,24 @@ chmod +x scripts/init_db.sh
 SKIP_DOCKER=true scripts/init_db.sh
 ```
 
-## Tests
+## Logs
 
-To prettify the output for test logs.
+To prettify the output for logs.
 
 ```sh
 # first install bunyan
 cargo install bunyan
 ```
 
+Prettify for Running Server:
+
 ```sh
-# then run tests with the ALLOW_TEST_LOGS flag and bunyan
+cargo run | bunyan
+```
+
+Prettify for Tests:
+
+```sh
+# ALLOW_TEST_LOGS flag needed to show logs when running tests
 ALLOW_TEST_LOGS=true cargo test | bunyan
 ```

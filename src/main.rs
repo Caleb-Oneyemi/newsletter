@@ -1,6 +1,7 @@
 use newsletter::config::get_config;
 use newsletter::startup::run;
 use newsletter::telemetry::{get_tracing_subscriber, init_tracing_subscriber};
+use secrecy::ExposeSecret;
 use sqlx::PgPool;
 use std::net::TcpListener;
 
@@ -11,8 +12,7 @@ async fn main() -> std::io::Result<()> {
     init_tracing_subscriber(subscriber);
 
     let config = get_config().expect("failed to read config.yaml");
-    let db_url = config.db.get_connection_string();
-    let conn_pool = PgPool::connect(&db_url)
+    let conn_pool = PgPool::connect(&config.db.get_connection_string().expose_secret())
         .await
         .expect("failed to connect to db");
 
