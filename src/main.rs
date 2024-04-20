@@ -6,7 +6,7 @@ use std::net::TcpListener;
 
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
-    let subscriber = get_tracing_subscriber("newsletter".into(), "info".into());
+    let subscriber = get_tracing_subscriber("newsletter".into(), "info".into(), std::io::stdout);
 
     init_tracing_subscriber(subscriber);
 

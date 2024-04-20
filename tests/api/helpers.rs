@@ -15,8 +15,17 @@ pub struct TestApp {
 
 //ensures tracing is only invoked once in tests
 static TRACING: Lazy<()> = Lazy::new(|| {
-    let subscriber = get_tracing_subscriber("newsletter".into(), "info".into());
-    init_tracing_subscriber(subscriber);
+    let name = "newsletter_tests".into();
+    let log_level = "info".into();
+
+    //run tests with `ALLOW_TEST_LOGS=true` to enable logging in tests
+    if std::env::var("ALLOW_TEST_LOGS").is_ok() {
+        let subscriber = get_tracing_subscriber(name, log_level, std::io::stdout);
+        init_tracing_subscriber(subscriber);
+    } else {
+        let subscriber = get_tracing_subscriber(name, log_level, std::io::sink);
+        init_tracing_subscriber(subscriber);
+    }
 });
 
 pub async fn spawn_app() -> TestApp {
