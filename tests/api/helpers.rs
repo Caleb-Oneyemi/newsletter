@@ -1,7 +1,9 @@
 use newsletter::{
     config::{get_config, DatabaseSettings},
     startup::run,
+    telemetry::{get_tracing_subscriber, init_tracing_subscriber},
 };
+use once_cell::sync::Lazy;
 use sqlx::{Connection, Executor, PgConnection, PgPool};
 use std::net::TcpListener;
 use uuid::Uuid;
@@ -11,7 +13,15 @@ pub struct TestApp {
     pub db_pool: PgPool,
 }
 
+//ensures tracing is only invoked once in tests
+static TRACING: Lazy<()> = Lazy::new(|| {
+    let subscriber = get_tracing_subscriber("newsletter".into(), "info".into());
+    init_tracing_subscriber(subscriber);
+});
+
 pub async fn spawn_app() -> TestApp {
+    Lazy::force(&TRACING);
+
     let listener = TcpListener::bind("127.0.0.1:0").expect("failed to bind random port");
     let port = listener.local_addr().unwrap().port();
 
