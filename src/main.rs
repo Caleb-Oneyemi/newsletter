@@ -17,8 +17,10 @@ async fn main() -> std::io::Result<()> {
 
     println!("db connection successful ....");
 
-    let addr = format!("127.0.0.1:{}", config.port);
-    let listener = TcpListener::bind(addr).expect("failed to bind port");
+    let addr = format!("{}:{}", config.app.host, config.app.port);
+    let listener = TcpListener::bind(addr.clone()).expect("failed to bind port");
+
+    println!("listening on {} ....", addr);
 
     run(listener, conn_pool)?.await
 }

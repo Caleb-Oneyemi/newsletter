@@ -3,9 +3,15 @@ use secrecy::{ExposeSecret, Secret};
 use serde::Deserialize;
 
 #[derive(Deserialize)]
-pub struct AppSettings {
-    pub port: u16,
+pub struct Settings {
+    pub app: AppSettings,
     pub db: DatabaseSettings,
+}
+
+#[derive(Deserialize)]
+pub struct AppSettings {
+    pub host: String,
+    pub port: u16,
 }
 
 #[derive(Deserialize)]
@@ -40,11 +46,61 @@ impl DatabaseSettings {
     }
 }
 
-pub fn get_config() -> Result<AppSettings, ConfigError> {
+pub enum Environment {
+    Dev,
+    Prod,
+}
+
+pub fn get_config() -> Result<Settings, ConfigError> {
+    let base_path = std::env::current_dir().expect("unable to get current directory");
+    let config_dir = base_path.join("config");
+
+    let default_env = Environment::Dev.try_into().unwrap();
+    let env: Environment = std::env::var("APP_ENV")
+        .unwrap_or_else(|_| default_env)
+        .try_into()
+        .expect("Failed to parse APP_ENV");
+
     let settings = Config::builder()
-        .add_source(File::with_name("config"))
+        .add_source(File::from(config_dir.join("base")))
+        .add_source(File::from(config_dir.join(env.as_str())).required(true))
         .build()
         .unwrap();
 
-    settings.try_deserialize::<AppSettings>()
+    settings.try_deserialize::<Settings>()
+}
+
+impl TryFrom<String> for Environment {
+    type Error = String;
+
+    fn try_from(s: String) -> Result<Self, Self::Error> {
+        match s.to_lowercase().as_str() {
+            "dev" => Ok(Self::Dev),
+            "prod" => Ok(Self::Prod),
+            unknown => Err(format!(
+                "{} is not a supported environment. Use either `dev` or `prod`.",
+                unknown
+            )),
+        }
+    }
+}
+
+impl TryInto<String> for Environment {
+    type Error = String;
+
+    fn try_into(self) -> Result<String, Self::Error> {
+        match self {
+            Environment::Dev => Ok("dev".to_string()),
+            Environment::Prod => Ok("prod".to_string()),
+        }
+    }
+}
+
+impl Environment {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Environment::Dev => "dev",
+            Environment::Prod => "prod",
+        }
+    }
 }
