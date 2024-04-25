@@ -12,8 +12,7 @@ async fn main() -> std::io::Result<()> {
     init_tracing_subscriber(subscriber);
 
     let config = get_config().expect("failed to read config.yaml");
-    let conn_pool = PgPool::connect(&config.db.get_connection_string().expose_secret())
-        .await
+    let conn_pool = PgPool::connect_lazy(&config.db.get_connection_string().expose_secret())
         .expect("failed to connect to db");
 
     println!("db connection successful ....");
