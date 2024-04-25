@@ -1,13 +1,13 @@
 # newsletter
 
-An email newsletter system built with rust
+A WIP email newsletter system built with rust
 
 ## Requirements
 
 - [Rust Toolchain](https://rustup.rs/)
 - [SQLx CLI](https://crates.io/crates/sqlx-cli): `cargo install sqlx-cli --no-default-features --features rustls,postgres`
 
-## Setup
+## Getting Started
 
 Run Postgres Container and Create Newsletter Database:
 

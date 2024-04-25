@@ -17,9 +17,19 @@ DB_NAME="${POSTGRES_DB:=newsletter}"
 DB_PORT="${POSTGRES_PORT:=5432}"
 DB_HOST="${POSTGRES_HOST:=localhost}"
 
-# Allow to skip Docker if a dockerized Postgres database is already running
+# Skip if Postgres db container is already running
+# -z: true if string length is zero
 if [[ -z "${SKIP_DOCKER}" ]]
 then
+    CONTAINER_ID=$(docker ps --filter 'name=newsletter_db' --format '{{.ID}}')
+    # -n: true if string length is NOT zero
+    if [[ -n $CONTAINER_ID ]]; then
+        echo >&2 "there is a postgres container already running, kill it with"
+        echo >&2 "    docker kill ${CONTAINER_ID}"
+        echo >&2 "    docker rm ${CONTAINER_ID}"
+        exit 1
+    fi
+    
     # run postgres with docker in detach mode with maximum 1k connections
     docker run \
         -e POSTGRES_USER=${DB_USER} \
