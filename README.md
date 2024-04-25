@@ -25,6 +25,13 @@ chmod +x scripts/init_db.sh
 SKIP_DOCKER=true scripts/init_db.sh
 ```
 
+Running the container
+
+```sh
+docker build --tag newsletter .
+docker run -p 8000:8000 newsletter
+```
+
 ## Logs
 
 To prettify the output for logs.
