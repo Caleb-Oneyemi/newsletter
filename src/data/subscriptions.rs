@@ -2,14 +2,15 @@ use chrono::Utc;
 use sqlx::PgPool;
 use uuid::Uuid;
 
+use crate::domain::NewSubscriber;
+
 #[tracing::instrument(
     name = "saving new subscriber details in the db",
-    skip(pool, email, name)
+    skip(pool, new_subscriber)
 )]
 pub async fn create_subscriber(
     pool: &PgPool,
-    email: String,
-    name: String,
+    new_subscriber: &NewSubscriber
 ) -> Result<(), sqlx::Error> {
     sqlx::query!(
         r#"
@@ -17,8 +18,8 @@ pub async fn create_subscriber(
         VALUES ($1, $2, $3, $4)
     "#,
         Uuid::new_v4(),
-        email,
-        name,
+        new_subscriber.email,
+        new_subscriber.name.as_ref(),
         Utc::now()
     )
     .execute(pool)
