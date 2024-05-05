@@ -1,6 +1,6 @@
 use crate::{
     data::create_subscriber,
-    domain::{NewSubscriber, SubscriberName},
+    domain::{NewSubscriber, SubscriberEmail, SubscriberName},
 };
 use actix_web::{
     web::{Data, Form},
@@ -29,8 +29,13 @@ pub async fn subscribe(form: Form<SubscriberFormData>, conn: Data<PgPool>) -> Ht
         Err(_) => return HttpResponse::BadRequest().finish(),
     };
 
+    let email = match SubscriberEmail::parse(form.email.clone()) {
+        Ok(name) => name,
+        Err(_) => return HttpResponse::BadRequest().finish(),
+    };
+
     let new_subscriber = NewSubscriber {
-        email: form.email.clone(),
+        email,
         name,
     };
 
