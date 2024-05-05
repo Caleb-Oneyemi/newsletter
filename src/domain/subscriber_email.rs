@@ -18,3 +18,39 @@ impl AsRef<str> for SubscriberEmail {
         &self.0
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::SubscriberEmail;
+    use claim::{assert_err, assert_ok};
+
+    #[test]
+    fn empty_string_is_rejected() {
+        let email = "".to_string();
+        assert_err!(SubscriberEmail::parse(email));
+    }
+
+    #[test]
+    fn email_without_at_symbol_is_rejected() {
+        let email = "you.com".to_string();
+        assert_err!(SubscriberEmail::parse(email));
+    }
+
+    #[test]
+    fn email_without_domain_is_rejected() {
+        let email = "you@.com".to_string();
+        assert_err!(SubscriberEmail::parse(email));
+    }
+
+    #[test]
+    fn email_without_subject_is_rejected() {
+        let email = "@gmail.com".to_string();
+        assert_err!(SubscriberEmail::parse(email));
+    }
+
+    #[test]
+    fn valid_email_parses() {
+        let email = "you@gmail.com".to_string();
+        assert_ok!(SubscriberEmail::parse(email));
+    }
+}
