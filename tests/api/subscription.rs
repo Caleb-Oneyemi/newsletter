@@ -67,3 +67,19 @@ async fn subscription_fails_for_duplicate_data() {
     assert_eq!(201, response.status().as_u16());
     assert_eq!(409, response2.status().as_u16());
 }
+
+#[tokio::test]
+async fn subscribe_fails_when_name_is_invalid() {
+    let app = spawn_app().await;
+    let client = reqwest::Client::new();
+
+    let response = client
+        .post(&format!("{}/subscriptions", &app.address))
+        .header("Content-Type", "application/x-www-form-urlencoded")
+        .body("name=&email=caleb%40gmail.com")
+        .send()
+        .await
+        .expect("Failed to execute request.");
+
+    assert_eq!(400, response.status().as_u16());
+}
