@@ -53,3 +53,14 @@ Prettify for Tests:
 # ALLOW_TEST_LOGS flag needed to show logs when running tests
 ALLOW_TEST_LOGS=true cargo test | bunyan
 ```
+
+## Environment Variables
+
+A sample `.env.example` file is provider to show env variables like so:
+
+```
+APP_PORT=
+DB_PORT=
+```
+
+If those keys are present in the main `.env` file, the config builder will use them to override the default values provided by the `.yaml` files in the `config` folder. If the keys are provided in the `.env` file without values, the process will panic.
