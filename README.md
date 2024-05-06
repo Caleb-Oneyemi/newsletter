@@ -9,7 +9,7 @@ A WIP email newsletter system built with rust
 - [Actix Web](https://github.com/actix/actix-web)
 - [Postgres](https://www.postgresql.org/)
 - [sqlx](https://github.com/launchbadge/sqlx)
-- [docker](https://www.docker.com)
+- [Docker](https://www.docker.com)
 
 ## Requirements
 
@@ -65,11 +65,11 @@ ALLOW_TEST_LOGS=true cargo test | bunyan
 
 ## Environment Variables
 
-A sample `.env.example` file is provider to show env variables like so:
+A sample `.example.env` file is provider to show env variables like so:
 
 ```
 APP_PORT=
 DB_PORT=
 ```
 
-If those keys are present in the main `.env` file, the config builder will use them to override the default values provided by the `.yaml` files in the `config` folder. If the keys are provided in the `.env` file without values, the process will panic.
+If those keys are present in the main `.env` file, the config builder will use them to override the default values provided by the `.yaml` files in the `config` folder. Hence if the keys are provided in the `.env` file without values, the process will panic.
