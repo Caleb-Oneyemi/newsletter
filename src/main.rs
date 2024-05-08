@@ -19,11 +19,11 @@ async fn main() -> std::io::Result<()> {
     println!("db connection successful ....");
 
     let sender = config
-        .email_client
+        .email
         .get_sender()
         .expect("invalid sender email address");
 
-    let email_client = EmailClient::new(config.email_client.base_url, sender);
+    let email_client = EmailClient::new(config.email.base_url.clone(), sender);
     let addr = format!("{}:{}", config.app.host, config.app.port);
     let listener = TcpListener::bind(addr.clone()).expect("failed to bind port");
 

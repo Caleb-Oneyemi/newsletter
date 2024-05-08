@@ -10,7 +10,7 @@ use crate::domain::SubscriberEmail;
 pub struct Settings {
     pub app: AppSettings,
     pub db: DatabaseSettings,
-    pub email_client: EmailClientSettings,
+    pub email: EmailClientSettings,
 }
 
 #[derive(Deserialize, Debug)]
@@ -23,12 +23,12 @@ pub struct AppSettings {
 #[derive(Deserialize, Debug)]
 pub struct EmailClientSettings {
     pub base_url: String,
-    pub sender_email: String,
+    pub sender: String,
 }
 
 impl EmailClientSettings {
     pub fn get_sender(&self) -> Result<SubscriberEmail, String> {
-        SubscriberEmail::parse(self.sender_email.clone())
+        SubscriberEmail::parse(self.sender.clone())
     }
 }
 

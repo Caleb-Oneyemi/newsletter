@@ -1,5 +1,8 @@
 app:
   port: 8000
+email:
+  base_url: "https://api.postmarkapp.com"
+  sender: "test@gmail.com"
 db:
   name: "newsletter"
   username: "postgres"

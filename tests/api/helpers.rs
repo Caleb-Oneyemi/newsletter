@@ -43,11 +43,11 @@ pub async fn spawn_app() -> TestApp {
     let connection_pool = configure_database(&config.db).await;
 
     let sender = config
-        .email_client
+        .email
         .get_sender()
         .expect("invalid sender email address");
 
-    let email_client = EmailClient::new(config.email_client.base_url, sender);
+    let email_client = EmailClient::new(config.email.base_url, sender);
     let server =
         run(listener, connection_pool.clone(), email_client).expect("failed to bind address");
 
