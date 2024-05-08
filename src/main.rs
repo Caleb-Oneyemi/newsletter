@@ -1,4 +1,5 @@
 use newsletter::config::get_config;
+use newsletter::providers::EmailClient;
 use newsletter::startup::run;
 use newsletter::telemetry::{get_tracing_subscriber, init_tracing_subscriber};
 use secrecy::ExposeSecret;
@@ -17,10 +18,16 @@ async fn main() -> std::io::Result<()> {
 
     println!("db connection successful ....");
 
+    let sender = config
+        .email_client
+        .get_sender()
+        .expect("invalid sender email address");
+
+    let email_client = EmailClient::new(config.email_client.base_url, sender);
     let addr = format!("{}:{}", config.app.host, config.app.port);
     let listener = TcpListener::bind(addr.clone()).expect("failed to bind port");
 
     println!("listening on {} ....", addr);
 
-    run(listener, conn_pool)?.await
+    run(listener, conn_pool, email_client)?.await
 }
